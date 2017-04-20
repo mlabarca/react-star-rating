@@ -5,7 +5,7 @@ var React = require('react');
 /**
  * @fileoverview react-star-rating
  * @author @cameronjroe
- * <StarRating 
+ * <StarRating
  *   name={string} - name for form input (required)
  *   caption={string} - caption for rating (optional)
  *   ratingAmount={number} - the rating amount (required, default: 5)
@@ -64,9 +64,9 @@ module.exports = React.createClass({displayName: "exports",
   componentWillMount: function () {
     this.min = 0;
     this.max = this.props.ratingAmount || 5;
-    
+
     if (this.props.rating) {
-      
+
       this.state.editing = false;
 
       var ratingVal = this.props.rating;
@@ -79,9 +79,9 @@ module.exports = React.createClass({displayName: "exports",
   },
 
   componentDidMount: function () {
-    this.root = this.refs.root.getDOMNode();
-    this.ratingStars = this.refs.ratingStars.getDOMNode();
-    this.ratingContainer = this.refs.ratingContainer.getDOMNode();
+    this.root = this.refs.root;
+    this.ratingStars = this.refs.ratingStars;
+    this.ratingContainer = this.refs.ratingContainer;
   },
 
   componentWillUnmount: function () {
@@ -114,7 +114,7 @@ module.exports = React.createClass({displayName: "exports",
     }
     return (val - min) * 100 / (max - min);
   },
-  
+
   getValueFromPosition: function (pos) {
     var precision = this.getDecimalPlaces(this.props.step);
     var maxWidth = this.ratingContainer.offsetWidth;
@@ -129,7 +129,7 @@ module.exports = React.createClass({displayName: "exports",
   calculate: function (pos) {
     var val = this.getValueFromPosition(pos),
         width = this.getWidthFromValue(val);
-    
+
     width += '%';
     return {width: width, val: val};
   },
@@ -154,10 +154,12 @@ module.exports = React.createClass({displayName: "exports",
   handleMouseMove: function (e) {
     // get hover position
     var ratingEvent = this.getRatingEvent(e);
-    this.setState({
-      pos: ratingEvent.width,
-      rating: ratingEvent.val
-    });
+    if (!this.props.disabled) {
+      this.setState({
+        pos: ratingEvent.width,
+        rating: ratingEvent.val
+      });
+    }
   },
 
   shouldComponentUpdate: function (nextProps, nextState) {
@@ -227,7 +229,7 @@ module.exports = React.createClass({displayName: "exports",
   render: function () {
 
     var caption = null;
-    
+
     // is there a caption?
     if (this.props.caption) {
       caption = (React.createElement("span", {className: "react-rating-caption"}, this.props.caption));
@@ -240,24 +242,24 @@ module.exports = React.createClass({displayName: "exports",
     var starRating;
     if (this.state.editing) {
       starRating = (
-        React.createElement("div", {ref: "ratingContainer", className: "rating-container rating-gly-star", "data-content": this.state.glyph, onMouseMove: this.handleMouseMove, onMouseLeave: this.handleMouseLeave, onClick: this.handleClick}, 
-          React.createElement("div", {ref: "ratingStars", className: "rating-stars", "data-content": this.state.glyph, style: {width: this.state.pos}}), 
+        React.createElement("div", {ref: "ratingContainer", className: "rating-container rating-gly-star", "data-content": this.state.glyph, onMouseMove: this.handleMouseMove, onMouseLeave: this.handleMouseLeave, onClick: this.handleClick},
+          React.createElement("div", {ref: "ratingStars", className: "rating-stars", "data-content": this.state.glyph, style: {width: this.state.pos}}),
           React.createElement("input", {type: "number", name: this.props.name, value: this.state.ratingCache.rating, style: {display: 'none !important'}, min: this.min, max: this.max, readOnly: true})
         )
       );
     } else {
       starRating = (
-        React.createElement("div", {ref: "ratingContainer", className: "rating-container rating-gly-star", "data-content": this.state.glyph}, 
-          React.createElement("div", {ref: "ratingStars", className: "rating-stars", "data-content": this.state.glyph, style: {width: this.state.pos}}), 
+        React.createElement("div", {ref: "ratingContainer", className: "rating-container rating-gly-star", "data-content": this.state.glyph},
+          React.createElement("div", {ref: "ratingStars", className: "rating-stars", "data-content": this.state.glyph, style: {width: this.state.pos}}),
           React.createElement("input", {type: "number", name: this.props.name, value: this.state.ratingCache.rating, style: {display: 'none !important'}, min: this.min, max: this.max, readOnly: true})
         )
       );
     }
 
     return (
-      React.createElement("span", {className: "react-star-rating"}, 
-        caption, 
-        React.createElement("span", {ref: "root", className: classes}, 
+      React.createElement("span", {className: "react-star-rating"},
+        caption,
+        React.createElement("span", {ref: "root", className: classes},
           starRating
         )
       )
